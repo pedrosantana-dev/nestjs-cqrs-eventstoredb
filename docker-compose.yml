@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - eventstoredb
+    command: sh -c "npm run start:dev"
+
+  eventstoredb:
+    image: eventstore/eventstore:lts
+    environment:
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - 1113:1113
+      - 2113:2113
+    volumes:
+      - type: volume
+        source: eventstore-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: eventstore-logs
+        target: /var/log/eventstore
+
+volumes:
+  eventstore-data:
+    driver: local
+  eventstore-logs:
+    driver: local

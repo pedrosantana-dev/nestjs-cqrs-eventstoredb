@@ -1,4 +1,3 @@
-import { EventStoreDBClient, FORWARDS, START } from '@eventstore/db-client';
 import {
     Global,
     Inject,
@@ -7,13 +6,12 @@ import {
     OnApplicationBootstrap,
     Provider,
 } from '@nestjs/common';
+import { EventStoreDBClient, FORWARDS, START } from '@eventstore/db-client';
+import { client } from './event-store';
 
 const EventStore: Provider = {
     provide: 'EVENT_STORE',
-    useFactory: () =>
-        EventStoreDBClient.connectionString(
-            `esdb://admin:changeit@eventstoredb:2113?tls=false`,
-        ),
+    useValue: client,
 };
 
 @Global()
